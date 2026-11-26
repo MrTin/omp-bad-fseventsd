@@ -1,0 +1,16 @@
+{
+	"name": "omp-bad-fseventsd",
+	"owner": { "name": "MrTin" },
+	"metadata": { "description": "Warn about a runaway macOS fseventsd and restart it when you say so" },
+	"plugins": [
+		{
+			"name": "bad-fseventsd",
+			"description": "Warns when macOS fseventsd runs away and restarts it only after you confirm, showing what it affects.",
+			"source": "./",
+			"category": "productivity",
+			"license": "MIT",
+			"repository": "https://github.com/MrTin/omp-bad-fseventsd",
+			"keywords": ["macos", "fseventsd", "memory"]
+		}
+	]
+}

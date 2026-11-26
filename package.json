@@ -1,0 +1,61 @@
+{
+	"name": "omp-bad-fseventsd",
+	"version": "0.1.0",
+	"description": "omp extension that warns when macOS fseventsd runs away (GBs of memory, a pinned core) and restarts it only when you say so.",
+	"type": "module",
+	"license": "MIT",
+	"author": "MrTin",
+	"homepage": "https://github.com/MrTin/omp-bad-fseventsd#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MrTin/omp-bad-fseventsd.git"
+	},
+	"bugs": "https://github.com/MrTin/omp-bad-fseventsd/issues",
+	"keywords": [
+		"omp",
+		"oh-my-pi",
+		"omp-plugin",
+		"omp-extension",
+		"macos",
+		"fseventsd",
+		"memory"
+	],
+	"os": [
+		"darwin"
+	],
+	"engines": {
+		"bun": ">=1.3",
+		"omp": ">=18.6.0"
+	},
+	"files": [
+		"src",
+		"helper",
+		"README.md",
+		"LICENSE",
+		"CHANGELOG.md"
+	],
+	"omp": {
+		"extensions": [
+			"./src/index.ts"
+		],
+		"settings": {
+			"limitGB": {
+				"type": "number",
+				"default": 0,
+				"min": 0,
+				"env": "OMP_BAD_FSEVENTSD_LIMIT_GB",
+				"description": "Warn when fseventsd uses more than this; 0 = 5% of RAM, at least 2 GB"
+			}
+		}
+	},
+	"scripts": {
+		"test": "bun test",
+		"check": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@oh-my-pi/pi-coding-agent": "18.18.6",
+		"@oh-my-pi/pi-utils": "18.18.6",
+		"@types/bun": "1.4.4",
+		"typescript": "7.0.2"
+	}
+}
