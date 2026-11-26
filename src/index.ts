@@ -10,6 +10,7 @@
 //   - afterwards, a session whose own processes lost their stream is told so
 
 import type { ExtensionAPI, ExtensionContext } from "@oh-my-pi/pi-coding-agent";
+import { Loader } from "@oh-my-pi/pi-tui";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import { type Client, fmtMB, limitMB, pidList, topShares } from "./scan.ts";
@@ -118,8 +119,18 @@ export default function badFseventsd(pi: ExtensionAPI) {
 			].join("\n"),
 		);
 		if (!ok) return;
-		ctx.ui.notify("fsnuke: restarting fseventsd (about 15 s)…", "info");
-		const res = await runHelper(pi.exec, "restart");
+		// Spinner above the editor while the helper runs; a slash command gets no working row of its own.
+		ctx.ui.setWidget(
+			"fsnuke",
+			(tui, theme) =>
+				new Loader(
+					tui,
+					s => theme.fg("accent", s),
+					s => theme.fg("muted", s),
+					"fsnuke: restarting fseventsd (about 15 s)…",
+				),
+		);
+		const res = await runHelper(pi.exec, "restart").finally(() => ctx.ui.setWidget("fsnuke", undefined));
 		if (res.error) return stopped(ctx, res.error);
 
 		const after = pidList(res.clients_after);

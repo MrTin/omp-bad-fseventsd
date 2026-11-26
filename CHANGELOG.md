@@ -4,6 +4,8 @@ All notable changes. Versions follow [semver](https://semver.org); tags are `vX.
 
 ## Unreleased
 
+- `/fsnuke`: show a spinner above the editor while `fseventsd` restarts, instead of a static line.
+
 ## 0.1.0 - 2026-11-26
 
 - Measure `fseventsd` every 10 minutes (one omp process, no root); warn in every interactive session above `limitGB` (default 5% of RAM, at least 2 GB).
