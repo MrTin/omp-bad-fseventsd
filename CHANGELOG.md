@@ -4,7 +4,7 @@ All notable changes. Versions follow [semver](https://semver.org); tags are `vX.
 
 ## Unreleased
 
-- `/fsnuke`: show a spinner above the editor while `fseventsd` restarts, instead of a static line.
+- `/fsnuke`: show a spinner with elapsed seconds above the editor while `fseventsd` restarts, instead of a static line. Drawn with plain widget lines, so it loads on omp 19 (the first version imported a pi-tui component omp 19 no longer has).
 
 ## 0.1.0 - 2026-11-26
 
