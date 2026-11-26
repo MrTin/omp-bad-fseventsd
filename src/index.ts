@@ -10,7 +10,6 @@
 //   - afterwards, a session whose own processes lost their stream is told so
 
 import type { ExtensionAPI, ExtensionContext } from "@oh-my-pi/pi-coding-agent";
-import { Loader } from "@oh-my-pi/pi-tui";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import { type Client, fmtMB, limitMB, pidList, topShares } from "./scan.ts";
@@ -43,6 +42,8 @@ const STOPPED: Record<string, string> = {
 	"no-daemon": "fseventsd is not running (launchd should start it again).",
 	"not-root": "the helper did not run as root; reinstall with /fsnuke install.",
 };
+
+const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 const owner = (c: Client, mySession: string) =>
 	c.sessionId === mySession ? ", started by this omp session" : c.sessionId ? ", started by another omp session" : "";
@@ -120,17 +121,19 @@ export default function badFseventsd(pi: ExtensionAPI) {
 		);
 		if (!ok) return;
 		// Spinner above the editor while the helper runs; a slash command gets no working row of its own.
-		ctx.ui.setWidget(
-			"fsnuke",
-			(tui, theme) =>
-				new Loader(
-					tui,
-					s => theme.fg("accent", s),
-					s => theme.fg("muted", s),
-					"fsnuke: restarting fseventsd (about 15 s)…",
-				),
-		);
-		const res = await runHelper(pi.exec, "restart").finally(() => ctx.ui.setWidget("fsnuke", undefined));
+		// Plain string lines, not a pi-tui component: pi-tui's exports change between omp versions.
+		const started = Date.now();
+		let frame = 0;
+		const draw = () =>
+			ctx.ui.setWidget("fsnuke", [
+				`${SPINNER[frame++ % SPINNER.length]} fsnuke: restarting fseventsd (about 15 s)… ${Math.round((Date.now() - started) / 1000)} s`,
+			]);
+		draw();
+		const timer = setInterval(draw, 100);
+		const res = await runHelper(pi.exec, "restart").finally(() => {
+			clearInterval(timer);
+			ctx.ui.setWidget("fsnuke", undefined);
+		});
 		if (res.error) return stopped(ctx, res.error);
 
 		const after = pidList(res.clients_after);

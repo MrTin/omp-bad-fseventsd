@@ -29,7 +29,7 @@ omp plugin link .    # load this checkout in omp; restart omp after changes
 - Changing the helper makes installed copies show as `outdated`; mention `/fsnuke install` in the CHANGELOG entry.
 - A new setting goes in `package.json#omp.settings` with `default`, `env` (`OMP_BAD_FSEVENTSD_*`) and `description`, plus a row in the README settings table.
 - Commit no personal paths, session ids, hostnames or credentials. Tests use fake ids and temp dirs (`test/setup.ts`).
-- No runtime dependencies. `@oh-my-pi/*` imports resolve to the host omp at runtime.
+- No runtime dependencies. `@oh-my-pi/*` imports resolve to the host omp at runtime, and omp's internals change between releases: import only types from `pi-coding-agent`, and at runtime nothing beyond the `pi-utils` path helpers already used. UI goes through `ctx.ui` (`notify`, `confirm`, `setWidget` with string lines), never pi-tui components. The daily `latest-omp` CI job checks against the newest omp.
 
 ## Workflow
 
