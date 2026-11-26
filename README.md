@@ -4,9 +4,7 @@ When macOS `fseventsd` runs away, you hear about it. It is restarted only when y
 
 An [omp](https://github.com/can1357/oh-my-pi) extension for macOS. `fseventsd` is the daemon that tells apps which files changed. When it sees enough new, unique file paths in a short time, it can switch into a state where it keeps every one of them and never frees them: GBs of memory, one core pinned, swap filling up. It does not recover until it is restarted. Agents that create and delete thousands of files trigger it: git worktrees with `node_modules`, package installs, test suites that build fixture trees in `$TMPDIR`.
 
-```text
-fseventsd uses 21.0 GB (limit 2.4 GB) and will not shrink on its own. /fsnuke restarts it after showing which apps watch files and may need a restart too.
-```
+![The warning, then the /fsnuke install confirmation](docs/warning-and-install.png)
 
 ## Install
 
@@ -30,14 +28,7 @@ Restart omp. To be able to restart the daemon, install the root helper once:
 
 `/fsnuke` first lists the apps that hold an event stream, and which of them an omp session started. Nothing happens until you confirm. Afterwards it reports:
 
-```text
-fsnuke: fseventsd 21.0 GB → 5 MB.
-Did not reconnect (restart them if you rely on them): node (pid 48213, started by this omp session)
-Where the recent file events came from:
-   59%  ~/projects/app
-    7%  /private/var/db
-    6%  ~/Library/Caches
-```
+![/fsnuke report: 21.0 GB to 4 MB, one app that did not reconnect, where the file events came from](docs/restart-report.png)
 
 A session whose own processes did not reconnect gets a note for its agent on the next turn, naming them, so it restarts its dev server or watcher.
 
